@@ -7,13 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 // 
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
-
+    const [showPlants, setShowPlants] = useState(false);
     const [addedToCart, setAddedToCart] = useState({});
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
-    const calculateTotalQuantity = () => {
+    const calculateTotalQuantity = () => {  
     return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0;
+  
 };
+
+    const totalQuantity = calculateTotalQuantity();
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -250,6 +253,7 @@ function ProductList({ onHomeClick }) {
 
     const handleCartClick = (e) => {
         e.preventDefault();
+        setShowPlants(true);
         setShowCart(true); 
     };
     const handlePlantsClick = (e) => {
@@ -297,7 +301,7 @@ function ProductList({ onHomeClick }) {
                                     <circle cx="184" cy="216" r="12"></circle>
                                     <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" id="mainIconPathAttribute"></path>
                                 </svg>
-                                {calculateTotalQuantity > 0 && (
+                                {totalQuantity > 0 && (
                                     <span className="cart-quantity-badge" style={{
                                         position: 'absolute',
                                         top: '10%',
@@ -308,7 +312,7 @@ function ProductList({ onHomeClick }) {
                                         fontWeight: 'bold',
                                         padding: '2px 6px',
                                     }}>
-                                        {calculateTotalQuantity}
+                                        {totalQuantity}
                                     </span>
                                 )}
                             </h1>
