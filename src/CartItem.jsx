@@ -7,31 +7,57 @@ const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
-  // Calculate total amount for all products in the cart
-  const calculateTotalAmount = () => {
- 
-  };
-
+  // 2. Manejador para continuar comprando (regresar al catálogo de plantas)
   const handleContinueShopping = (e) => {
-   
+    e.preventDefault();
+    onContinueShopping(e);
   };
 
-
-
-  const handleIncrement = (item) => {
+  // 3. Incrementar la cantidad de un tipo de planta en 1
+ const handleIncrement = (item) => {
+    // Despacha updateQuantity sumando 1 a la cantidad actual
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 }));
   };
 
   const handleDecrement = (item) => {
-   
+    // Si la cantidad es mayor a 1, simplemente resta 1
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 }));
+    } else {
+      // De lo contrario (si es 1 y se resta, quedaría en 0), elimina el artículo por completo
+      dispatch(removeItem(item.name));
+    }
   };
 
+  // 5. Eliminar un tipo de planta por completo del carrito
   const handleRemove = (item) => {
+    dispatch(removeItem(item.name));
   };
 
-  // Calculate total cost based on quantity for an item
+  // 6. Calcular el subtotal para un tipo específico de planta según su cantidad
   const calculateTotalCost = (item) => {
+    const itemCost = parseFloat(item.cost.substring(1));
+    return itemCost * item.quantity;
   };
-
+  // Calculate total amount for all products in the cart
+  const calculateTotalAmount = () => {
+    let total = 0; // Inicializa la variable total
+    
+    cart.forEach((item) => { // Itera sobre el array cart
+      // Convierte la cadena cost a número usando substring(1) y multiplica por la cantidad
+      const itemCost = parseFloat(item.cost.substring(1));
+      const subtotal = itemCost * item.quantity;
+      
+      // Agrega el valor resultante a total
+      total += subtotal; 
+    });
+    const calculateTotalCost = (item) => {
+    const itemCost = parseFloat(item.cost.substring(1));
+    return itemCost * item.quantity;
+  };
+    return total; // Devuelve la suma final
+  };
+  
   return (
     <div className="cart-container">
       <h2 style={{ color: 'black' }}>Total Cart Amount: ${calculateTotalAmount()}</h2>
@@ -64,5 +90,3 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
 export default CartItem;
-
-
